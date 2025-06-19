@@ -56,33 +56,36 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         areaResultado = new javax.swing.JScrollPane();
         areaResultado2 = new javax.swing.JTextArea();
         jScrollPane2 = new javax.swing.JScrollPane();
+        jButton1 = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(950, 600));
+        setSize(new java.awt.Dimension(650, 500));
         getContentPane().setLayout(new org.netbeans.lib.awtextra.AbsoluteLayout());
 
         jLabel1.setText("Mensaje:");
-        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(33, 0, 55, -1));
+        getContentPane().add(jLabel1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 20, 55, -1));
 
         areaMensaje.setColumns(20);
         areaMensaje.setRows(5);
         jScrollPane1.setViewportView(areaMensaje);
 
-        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(33, 22, 220, 39));
+        getContentPane().add(jScrollPane1, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 40, 700, 150));
 
         jLabel2.setText("Clave:");
-        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(33, 67, 37, -1));
-        getContentPane().add(campoClave, new org.netbeans.lib.awtextra.AbsoluteConstraints(33, 89, 220, -1));
+        getContentPane().add(jLabel2, new org.netbeans.lib.awtextra.AbsoluteConstraints(430, 240, 37, 20));
+        getContentPane().add(campoClave, new org.netbeans.lib.awtextra.AbsoluteConstraints(470, 240, 220, -1));
 
         buttonGroup1.add(radioCifrar);
         radioCifrar.setText("Cifrar");
-        getContentPane().add(radioCifrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(33, 124, 98, -1));
+        getContentPane().add(radioCifrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(60, 230, 98, -1));
 
         buttonGroup1.add(radioDescifrar);
         radioDescifrar.setText("Descifrar");
-        getContentPane().add(radioDescifrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(149, 124, 98, -1));
+        getContentPane().add(radioDescifrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(170, 230, 98, -1));
 
-        comboAlgoritmo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cesar", "Llave", "Vigenere", "Palabra Inversa", "Mensaje Inverso", "Codigo Telefonico", "Binario", "Triple DES" }));
-        getContentPane().add(comboAlgoritmo, new org.netbeans.lib.awtextra.AbsoluteConstraints(253, 123, -1, -1));
+        comboAlgoritmo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cesar", "Llave", "Vigenere", "Palabra Inversa", "Mensaje Inverso", "Codigo Telefonico", "Binario", "Triple DES", "AES" }));
+        getContentPane().add(comboAlgoritmo, new org.netbeans.lib.awtextra.AbsoluteConstraints(560, 10, -1, -1));
 
         btnEjecutar.setText("Ejecutar");
         btnEjecutar.addActionListener(new java.awt.event.ActionListener() {
@@ -90,17 +93,25 @@ public class VentanaPrincipal extends javax.swing.JFrame {
                 btnEjecutarActionPerformed(evt);
             }
         });
-        getContentPane().add(btnEjecutar, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 160, -1, -1));
+        getContentPane().add(btnEjecutar, new org.netbeans.lib.awtextra.AbsoluteConstraints(270, 280, -1, -1));
 
         jLabel3.setText("Resultado:");
-        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(33, 208, -1, -1));
+        getContentPane().add(jLabel3, new org.netbeans.lib.awtextra.AbsoluteConstraints(50, 290, -1, -1));
 
         areaResultado2.setColumns(20);
         areaResultado2.setRows(5);
         areaResultado.setViewportView(areaResultado2);
 
-        getContentPane().add(areaResultado, new org.netbeans.lib.awtextra.AbsoluteConstraints(33, 230, -1, 40));
+        getContentPane().add(areaResultado, new org.netbeans.lib.awtextra.AbsoluteConstraints(40, 320, 700, 160));
         getContentPane().add(jScrollPane2, new org.netbeans.lib.awtextra.AbsoluteConstraints(260, 180, -1, -1));
+
+        jButton1.setText("Enviar correo");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        getContentPane().add(jButton1, new org.netbeans.lib.awtextra.AbsoluteConstraints(760, 440, 130, 40));
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -187,6 +198,26 @@ public class VentanaPrincipal extends javax.swing.JFrame {
 
     }//GEN-LAST:event_btnEjecutarActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        String correo = JOptionPane.showInputDialog(this, "Ingrese el correo al que desea enviar el resultado:");
+
+        if (correo != null && !correo.trim().isEmpty()) {
+            boolean existe = logicadenegocios.MailValidator.correoExiste(correo);
+            System.out.println(logicadenegocios.MailValidator.validarCorreo(correo));
+            
+            if (existe) {
+                JOptionPane.showMessageDialog(this, "Correo valido. Puedes enviar el resultado.");
+                CuentaCorreo mensajero = new CuentaCorreo("no.reply.bancovital@gmail.com");
+                mensajero.enviarCorreo(correo, "Mensaje en clave", areaResultado2.getText());
+                
+            } else {
+                JOptionPane.showMessageDialog(this, "Correo invalido o no existe.");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "No se ingresó ningún correo.");
+        }
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -231,6 +262,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JTextField campoClave;
     private javax.swing.JComboBox<String> comboAlgoritmo;
+    private javax.swing.JButton jButton1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
