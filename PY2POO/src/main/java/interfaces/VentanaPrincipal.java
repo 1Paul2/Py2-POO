@@ -81,7 +81,7 @@ public class VentanaPrincipal extends javax.swing.JFrame {
         radioDescifrar.setText("Descifrar");
         getContentPane().add(radioDescifrar, new org.netbeans.lib.awtextra.AbsoluteConstraints(149, 124, 98, -1));
 
-        comboAlgoritmo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cesar", "Llave" }));
+        comboAlgoritmo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Cesar", "Llave", "Vigenere", "Palabra Inversa", "Mensaje Inverso", "Codigo Telefonico", "Binario", "Triple DES" }));
         getContentPane().add(comboAlgoritmo, new org.netbeans.lib.awtextra.AbsoluteConstraints(253, 123, -1, -1));
 
         btnEjecutar.setText("Ejecutar");
@@ -113,34 +113,74 @@ public class VentanaPrincipal extends javax.swing.JFrame {
     String algoritmo = comboAlgoritmo.getSelectedItem().toString();
 
     // Validar entrada
-    if (!utils.Validador.esMensajeValido(mensaje)) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Mensaje inválido.");
+    if (!utils.Validador.esMensajeValido(mensaje, algoritmo)) {
+        JOptionPane.showMessageDialog(this, "Mensaje invalido.");
         return;
     }
+
+    // Validar clave solo si el algoritmo la requiere
+    if (!(algoritmo.equals("Mensaje Inverso") || 
+      algoritmo.equals("Palabra Inversa") || 
+      algoritmo.equals("Binario") || 
+      algoritmo.equals("Codigo Telefonico"))) {
 
     if (!utils.Validador.esClaveValida(clave)) {
-        javax.swing.JOptionPane.showMessageDialog(this, "Clave inválida.");
+        JOptionPane.showMessageDialog(this, "Clave inválida.");
         return;
+        }
     }
+
 
     // Crear objeto Mensaje
+    // Crear objeto Mensaje
     logicadenegocios.Mensaje msg;
-    if (algoritmo.equals("Cesar")) {
-        msg = new logicadenegocios.Mensaje(mensaje, clave, 3); // valor de desplazamiento fijo
+    if (algoritmo.equals("Mensaje Inverso") || algoritmo.equals("Palabra Inversa")
+        || algoritmo.equals("Codigo Telefonico") || algoritmo.equals("Binario")) {
+        msg = new logicadenegocios.Mensaje(mensaje);  // Constructor sin clave
     } else {
-        msg = new logicadenegocios.Mensaje(mensaje, clave, 0);
+        msg = new logicadenegocios.Mensaje(mensaje, clave);
     }
 
-    // Seleccionar estrategia
+
+
+    // Seleccionar estrategia según el algoritmo
     logicadenegocios.GestorCifrado gestor = new logicadenegocios.GestorCifrado();
-    if (algoritmo.equals("Cesar")) {
-        gestor.setEstrategia(new logicadenegocios.CifradorCesar());
-    } else {
-        gestor.setEstrategia(new logicadenegocios.CifradorLlave());
+    switch (algoritmo) {
+        case "Cesar":
+            gestor.setEstrategia(new logicadenegocios.CifradorCesar());
+            break;
+        case "Llave":
+            gestor.setEstrategia(new logicadenegocios.CifradorLlave());
+            break;
+        case "Vigenere":
+            gestor.setEstrategia(new logicadenegocios.CifradorVigenere());
+            break;
+        case "Palabra Inversa":
+            gestor.setEstrategia(new logicadenegocios.CifradorPalabraInversa());
+            break;
+        case "Mensaje Inverso":
+            gestor.setEstrategia(new logicadenegocios.CifradorMensajeInverso());
+            break;
+        case "Codigo Telefonico":
+            gestor.setEstrategia(new logicadenegocios.CifradorCodigoTelefonico());
+            break;
+        case "Binario":
+            gestor.setEstrategia(new logicadenegocios.CifradorBinario());
+            break;
+        case "Triple DES":
+            gestor.setEstrategia(new logicadenegocios.CifradorTripleDES());
+            break;
+        case "AES":
+            gestor.setEstrategia(new logicadenegocios.CifradorAES());
+            break;
+        default:
+            JOptionPane.showMessageDialog(this, "Algoritmo no reconocido.");
+            return;
     }
 
-    // Ejecutar acción
-    String resultado = cifrar ? gestor.cifrar(msg) : gestor.descifrar(msg);
+    // Ejecutar la acción
+    String resultado = cifrar ? gestor.cifrarMensaje(msg) : gestor.descifrarMensaje(msg);
+
 
     // Mostrar resultado
     areaResultado2.setText(resultado);

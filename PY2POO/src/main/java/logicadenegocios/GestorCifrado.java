@@ -16,4 +16,13 @@ public class GestorCifrado {
     public String descifrar(Mensaje mensaje) {
         return estrategia.descifrarMensaje(mensaje);
     }
+
+    // ✅ Métodos solicitados explícitamente:
+    public String cifrarMensaje(Mensaje m) {
+        return cifrar(m);
+    }
+
+    public String descifrarMensaje(Mensaje m) {
+        return descifrar(m);
+    }
 }

@@ -8,10 +8,11 @@ public class CifradorCesar implements Cifrable {
     public String cifrarMensaje(Mensaje pMensaje) {
         StringBuilder resultado = new StringBuilder();
         String texto = pMensaje.getTexto().toLowerCase();
+        int desplazamiento = pMensaje.getCifra();
 
         for (char c : texto.toCharArray()) {
             if (c >= 'a' && c <= 'z') {
-                char nuevo = (char) ((c - 'a' + 3) % 26 + 'a');
+                char nuevo = (char) ((c - 'a' + desplazamiento) % 26 + 'a');
                 resultado.append(nuevo);
             } else {
                 resultado.append(c);
@@ -25,10 +26,11 @@ public class CifradorCesar implements Cifrable {
     public String descifrarMensaje(Mensaje pMensaje) {
         StringBuilder resultado = new StringBuilder();
         String texto = pMensaje.getTexto().toLowerCase();
+        int desplazamiento = pMensaje.getCifra();
 
         for (char c : texto.toCharArray()) {
             if (c >= 'a' && c <= 'z') {
-                char nuevo = (char) ((c - 'a' - 3 + 26) % 26 + 'a');
+                char nuevo = (char) ((c - 'a' - desplazamiento + 26) % 26 + 'a');
                 resultado.append(nuevo);
             } else {
                 resultado.append(c);

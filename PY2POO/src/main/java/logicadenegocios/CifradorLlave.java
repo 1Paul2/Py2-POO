@@ -23,8 +23,14 @@ public class CifradorLlave implements Cifrable {
 
         for (char c : texto.toCharArray()) {
             if (c >= 'a' && c <= 'z') {
+                // Saltar letras inválidas en clave
+                while (iClave < lenClave && (clave.charAt(iClave % lenClave) < 'a' || clave.charAt(iClave % lenClave) > 'z')) {
+                    iClave++;
+                }
+
+                char letraClave = clave.charAt(iClave % lenClave);
                 int valTexto = letraANumero(c);
-                int valClave = letraANumero(clave.charAt(iClave % lenClave));
+                int valClave = letraANumero(letraClave);
 
                 int suma = valTexto + valClave;
                 if (suma > 26) suma -= 26;
@@ -32,7 +38,7 @@ public class CifradorLlave implements Cifrable {
                 resultado.append(numeroALetra(suma));
                 iClave++;
             } else {
-                resultado.append(c);  // mantener espacios
+                resultado.append(c);  // conservar espacios u otros caracteres
             }
         }
 
@@ -50,8 +56,14 @@ public class CifradorLlave implements Cifrable {
 
         for (char c : texto.toCharArray()) {
             if (c >= 'a' && c <= 'z') {
+                // Saltar letras inválidas en clave
+                while (iClave < lenClave && (clave.charAt(iClave % lenClave) < 'a' || clave.charAt(iClave % lenClave) > 'z')) {
+                    iClave++;
+                }
+
+                char letraClave = clave.charAt(iClave % lenClave);
                 int valTexto = letraANumero(c);
-                int valClave = letraANumero(clave.charAt(iClave % lenClave));
+                int valClave = letraANumero(letraClave);
 
                 int resta = valTexto - valClave;
                 if (resta <= 0) resta += 26;
